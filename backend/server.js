@@ -1,8 +1,11 @@
 require("dotenv").config();
 require("./db/database");
+
 const express = require("express");
 const cors = require("cors");
+
 const { generateLog } = require("./services/simulator");
+
 const logsRoute = require("./routes/logs");
 const metricsRoute = require("./routes/metrics");
 const analysisRoute = require("./routes/analysis");
@@ -13,6 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 app.use("/logs", logsRoute);
 app.use("/metrics", metricsRoute);
 app.use("/analysis", analysisRoute);
@@ -23,7 +27,7 @@ app.get("/", (req, res) => {
   res.send("TraceLens backend running successfully");
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 setInterval(() => {
   generateLog();
