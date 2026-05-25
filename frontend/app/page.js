@@ -20,6 +20,8 @@ export default function Home() {
   const [answer, setAnswer] = useState("");
   const [prediction, setPrediction] = useState(null);
   const [timeline, setTimeline] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [lastAlertId, setLastAlertId] = useState(null);
 
   async function fetchData() {
     try {
@@ -49,6 +51,30 @@ export default function Home() {
           endpoint: topFailure.endpoint,
           confidence: Math.floor(Math.random() * 15) + 80
         });
+      }
+
+      // ALERT FIX
+      if (
+        analysisData?.incident &&
+        (
+          analysisData.incident.severity === "critical" ||
+          analysisData.incident.severity === "high"
+        )
+      ) {
+        const currentIncidentId =
+          analysisData.incident.id ||
+          analysisData.incident.timestamp;
+
+        if (currentIncidentId !== lastAlertId) {
+          setLastAlertId(currentIncidentId);
+          setShowAlert(true);
+
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000);
+        }
+      } else {
+        setShowAlert(false);
       }
 
     } catch (error) {
@@ -124,10 +150,10 @@ export default function Home() {
 
     const interval = setInterval(() => {
       fetchData();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [lastAlertId]);
 
   const chartData = logs.map((log, index) => ({
     name: index + 1,
@@ -137,11 +163,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#000d3a] text-white p-8">
 
-      {analysis?.incident?.severity === "critical" && (
+      {showAlert && analysis?.incident && (
         <div className="max-w-6xl mx-auto mb-6">
           <div className="bg-red-600 border border-red-400 text-white p-5 rounded-2xl shadow-lg animate-pulse">
             <h2 className="text-2xl font-bold mb-2">
-              🚨 CRITICAL INCIDENT DETECTED
+              🚨 INCIDENT DETECTED
             </h2>
             <p className="text-lg">
               {analysis.incident.endpoint} failing | {analysis.incident.error}
