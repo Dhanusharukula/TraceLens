@@ -71,7 +71,7 @@ export default function Home() {
 
           setTimeout(() => {
             setShowAlert(false);
-          }, 5000);
+          }, 10000);
         }
       } else {
         setShowAlert(false);
