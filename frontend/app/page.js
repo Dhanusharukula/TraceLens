@@ -39,9 +39,7 @@ export default function Home() {
       setPatterns(patternsData);
 
       setTimeline(
-        logsData
-          .filter((log) => log.status >= 500)
-          .slice(0, 5)
+        logsData.filter((log) => log.status >= 500).slice(0, 5)
       );
 
       if (patternsData.length > 0) {
@@ -50,7 +48,7 @@ export default function Home() {
         setPrediction({
           endpoint: topFailure.endpoint,
           confidence: Math.floor(Math.random() * 15) + 80
-   });
+        });
       }
 
     } catch (error) {
@@ -104,7 +102,7 @@ export default function Home() {
 
   async function askAI() {
     try {
-      const res = await fetchfetch(`${process.env.NEXT_PUBLIC_API_URL}/ask`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -139,7 +137,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#000d3a] text-white p-8">
 
-      {/* Critical Alert Banner */}
       {analysis?.incident?.severity === "critical" && (
         <div className="max-w-6xl mx-auto mb-6">
           <div className="bg-red-600 border border-red-400 text-white p-5 rounded-2xl shadow-lg animate-pulse">
@@ -154,14 +151,12 @@ export default function Home() {
       )}
 
       <div className="max-w-6xl mx-auto">
-
         <h1 className="text-5xl font-bold mb-2">TraceLens</h1>
 
         <p className="text-gray-300 mb-10">
           Real-time AI API Failure Detection Dashboard
         </p>
 
-        {/* Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
           <Card title="Total Requests" value={metrics?.totalRequests || 0} />
           <Card title="Failed Requests" value={metrics?.failedRequests || 0} color="text-red-400" />
@@ -169,24 +164,17 @@ export default function Home() {
           <Card title="Avg Latency" value={`${metrics?.avgLatency || 0} ms`} color="text-yellow-400" />
         </div>
 
-        {/* Latency Chart */}
         <Section title="Latency Trend">
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
               <XAxis dataKey="name" stroke="#94a3b8" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="latency"
-                stroke="#38bdf8"
-                strokeWidth={3}
-              />
+              <Line type="monotone" dataKey="latency" stroke="#38bdf8" strokeWidth={3} />
             </LineChart>
           </ResponsiveContainer>
         </Section>
 
-        {/* Prediction */}
         <Section title="🔮 Predicted Next Failure">
           {prediction ? (
             <>
@@ -200,7 +188,6 @@ export default function Home() {
           )}
         </Section>
 
-        {/* AI Analysis */}
         <Section title="AI Incident Analysis">
           {analysis?.incident ? (
             <>
@@ -222,7 +209,6 @@ export default function Home() {
           )}
         </Section>
 
-        {/* Ask AI */}
         <Section title="Ask AI About Incident">
           <input
             type="text"
@@ -246,22 +232,16 @@ export default function Home() {
           )}
         </Section>
 
-        {/* Timeline */}
         <Section title="Recent Incident Timeline">
           {timeline.length > 0 ? (
             timeline.map((incident, index) => (
-              <div
-                key={index}
-                className="border-b border-slate-700 py-3"
-              >
+              <div key={index} className="border-b border-slate-700 py-3">
                 <p>
-                  <strong>
-                    {new Date(incident.timestamp).toLocaleTimeString()}
-                  </strong>{" "}
-                  — {incident.endpoint} —{" "}
-                  <span className="text-red-400">
-                    {incident.error}
-                  </span>
+                  <strong>{new Date(incident.timestamp).toLocaleTimeString()}</strong>
+                  {" — "}
+                  {incident.endpoint}
+                  {" — "}
+                  <span className="text-red-400">{incident.error}</span>
                 </p>
               </div>
             ))
@@ -270,7 +250,6 @@ export default function Home() {
           )}
         </Section>
 
-        {/* Failure Patterns */}
         <Section title="Recurring Failure Patterns">
           <table className="w-full">
             <thead>
@@ -292,7 +271,6 @@ export default function Home() {
           </table>
         </Section>
 
-        {/* Logs */}
         <Section title="Live API Logs">
           <table className="w-full">
             <thead>
@@ -319,7 +297,6 @@ export default function Home() {
             </tbody>
           </table>
         </Section>
-
       </div>
     </div>
   );
@@ -329,9 +306,7 @@ function Card({ title, value, color = "" }) {
   return (
     <div className="bg-[#0d1b4d] p-6 rounded-2xl border border-slate-700">
       <p className="text-gray-400">{title}</p>
-      <h2 className={`text-5xl font-bold ${color}`}>
-        {value}
-      </h2>
+      <h2 className={`text-5xl font-bold ${color}`}>{value}</h2>
     </div>
   );
 }
