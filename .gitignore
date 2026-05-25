@@ -1,0 +1,6 @@
+node_modules/
+.env
+.next/
+frontend/node_modules/
+backend/node_modules/
+backend/tracelens.db
